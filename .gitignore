@@ -5,3 +5,8 @@ package-lock.json
 package.json
 /frontend/.gitignore
 /frontend/README.md
+marketplace_products.csv
+pagina_inicial_sempoup.png
+pagina_inicial.png
+pagina_pesquisa.png
+src\web_driver\__pycache__

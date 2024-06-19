@@ -10,21 +10,38 @@ def send_keys_slowly(element, text, delay=0.1):
         element.send_keys(char)
         time.sleep(delay)
 
-def scrape_mercado_livre():
-    browsers = ["chrome", "firefox", "edge"]
+def scrape_americanas():
+    browsers = ["firefox", "edge", "chrome"]
+    url = "https://www.americanas.com.br"
     driver = None
 
     for browser in browsers:
         try:
-            driver = get_driver(browser)
-            driver.get("https://www.mercadolivre.com.br")
+            driver = get_driver(browser, url)
+            driver.get(url)
             driver.save_screenshot("pagina_inicial.png")
             
             time.sleep(3)
             
-            search_box = driver.find_element(By.CSS_SELECTOR, ".nav-search-input")
+            try:
+                    popups = WebDriverWait(driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, "//a[@target='_blank']"))
+                    )
+
+                    if popups:
+                        fechar_popup = driver.find_element(By.XPATH, "//a[@class='styles__CloseButton-sc-1yh2j4k-1 iwYXw']")
+                        fechar_popup.click()
+
+                    driver.save_screenshot("pagina_inicial_sempoup.png")
+
+            except NoSuchElementException as e:
+                print(f"Erro ao lidar com o popup: {e}")
+
+            search_box = driver.find_element(By.XPATH, "//input[@aria-label='Pesquisar']")
             send_keys_slowly(search_box, "Apple iPhone 15", delay=0.1)
+            
             time.sleep(1)
+            
             search_box.submit()
 
             time.sleep(3)  # Aguarda o carregamento da página
@@ -34,7 +51,7 @@ def scrape_mercado_livre():
 
             try:
                 elements = WebDriverWait(driver, 10).until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".ui-search-layout__item"))
+                    EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col__StyledCol']"))
                 )
             except TimeoutException:
                 print(f"Timeout ao aguardar elementos com o navegador {browser}. Tentando com o próximo navegador.")
@@ -50,9 +67,9 @@ def scrape_mercado_livre():
 
             for element in elements:
                 try:
-                    name = element.find_element(By.CSS_SELECTOR, ".ui-search-item__title")
-                    price = element.find_element(By.CSS_SELECTOR, ".ui-search-price__part")
-                    link = element.find_element(By.CSS_SELECTOR, "a")
+                    name = element.find_element(By.XPATH, ".//h3[@class='product-name']")
+                    price = element.find_element(By.XPATH, ".//span[@class='sales-price']")
+                    link = element.find_element(By.XPATH, ".//a[@class='inStockCard__Link-sc-1ngt5zo-1']")
                     
 
                     name = name.text.strip()
@@ -63,7 +80,7 @@ def scrape_mercado_livre():
                         "name": name,
                         "price": price,
                         "link": link,
-                        "store": "Mercado Livre"
+                        "store": "Americanas"
                     })
                 except (NoSuchElementException, StaleElementReferenceException) as e:
                     print(f"Erro ao extrair dados de um item: {e}")
@@ -90,9 +107,9 @@ def scrape_mercado_livre():
 def main():
     try:
         # Realiza o scraping de cada site
-        mercado_livre_products = scrape_mercado_livre()
+        #mercado_livre_products = scrape_mercado_livre()
         #magalu_products = scrape_magalu()
-        #americanas_products = scrape_americanas()
+        americanas_products = scrape_americanas()
         #madeira_madeira_products = scrape_madeira_madeira()
         #shopee_products = scrape_shopee()
         #kabum_products = scrape_kabum()
@@ -100,9 +117,9 @@ def main():
 
         # Unir todos os produtos coletados
         all_products = []
-        all_products.extend(mercado_livre_products)
+        #all_products.extend(mercado_livre_products)
         #all_products.extend(magalu_products)
-        #all_products.extend(americanas_products)
+        all_products.extend(americanas_products)
         #all_products.extend(madeira_madeira_products)
         #all_products.extend(shopee_products)
         #all_products.extend(kabum_products)

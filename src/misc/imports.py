@@ -18,3 +18,6 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 import random
 import pandas as pd
 import time
+
+from fake_useragent import UserAgent
+import requests

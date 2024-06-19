@@ -12,7 +12,7 @@ def send_keys_slowly(element, text, delay=0.1):
         time.sleep(delay)
 
 def scrape_mercado_livre():
-    browsers = ["chrome", "firefox", "edge"]
+    browsers = ["firefox", "edge", "chrome"]
     driver = None
 
     for browser in browsers:
@@ -95,7 +95,7 @@ def scrape_mercado_livre():
 
 
 def scrape_magalu():
-    browsers = ["chrome", "firefox", "edge"]
+    browsers = ["firefox", "edge", "chrome"]
     driver = None
 
     for browser in browsers:
@@ -177,53 +177,100 @@ def scrape_magalu():
     return []
 
 
-'''
+
 def scrape_americanas():
-    options = Options()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    browsers = ["firefox", "edge", "chrome"]
+    driver = None
 
-    try:
-        driver.get("https://www.americanas.com.br")
-        search_box = driver.find_element(By.CSS_SELECTOR, "#h_search-input")
-        search_box.send_keys("Apple iPhone 15")
-        search_box.submit()
-
-        time.sleep(5)  # Aguarda o carregamento da página
-        products = []
-
-        # Exemplo de extração de dados (adapte conforme a estrutura HTML atual do site)
-        elements = driver.find_elements_by_css_selector(".product-grid-item")
-
-        for element in elements:
+    for browser in browsers:
+        try:
+            driver = get_driver(browser)
+            driver.get("https://www.americanas.com.br")
+            driver.save_screenshot("pagina_inicial.png")
+            
+            time.sleep(3)
+            
             try:
-                name = element.find_element(By.CSS_SELECTOR, ".product-title").text
-                price = element.find_element(By.CSS_SELECTOR, ".price").text
-                link = element.find_element(By.CSS_SELECTOR, "a").get_attribute("href")
+                    popups = WebDriverWait(driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, "//a[@target='_blank']"))
+                    )
 
-                products.append({
-                    "name": name,
-                    "price": price,
-                    "link": link,
-                    "store": "Americanas"
-                })
-            except (NoSuchElementException, StaleElementReferenceException) as e:
-                print(f"Erro ao extrair dados de um item: {e}")
+                    if popups:
+                        fechar_popup = driver.find_element(By.XPATH, "//a[@class='styles__CloseButton-sc-1yh2j4k-1 iwYXw']")
+                        fechar_popup.click()
 
-        return products
+                    driver.save_screenshot("pagina_inicial_sempoup.png")
 
-    except TimeoutException:
-        print("Timeout ao tentar carregar a página da Americanas")
-        return []
+            except NoSuchElementException as e:
+                print(f"Erro ao lidar com o popup: {e}")
 
-    except Exception as e:
-        print(f"Erro durante o scraping da Americanas: {e}")
-        return []
+            search_box = driver.find_element(By.XPATH, "//input[@aria-label='Pesquisar']")
+            send_keys_slowly(search_box, "Apple iPhone 15", delay=0.1)
+            
+            time.sleep(1)
+            
+            search_box.submit()
 
-    finally:
-        driver.quit()
+            time.sleep(3)  # Aguarda o carregamento da página
+            products = []
 
+            driver.save_screenshot("pagina_pesquisa.png")
 
+            try:
+                elements = WebDriverWait(driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col__StyledCol']"))
+                )
+            except TimeoutException:
+                print(f"Timeout ao aguardar elementos com o navegador {browser}. Tentando com o próximo navegador.")
+                if driver:
+                    driver.quit()
+                continue  # Tentar próximo navegador
+
+            if not elements:
+                print(f"Nenhum elemento encontrado com o navegador {browser}. Tentando com o próximo navegador.")
+                if driver:
+                    driver.quit()
+                continue
+
+            for element in elements:
+                try:
+                    name = element.find_element(By.XPATH, ".//h3[@class='product-name']")
+                    price = element.find_element(By.XPATH, ".//span[@class='sales-price']")
+                    link = element.find_element(By.XPATH, ".//a[@class='inStockCard__Link-sc-1ngt5zo-1']")
+                    
+
+                    name = name.text.strip()
+                    price = price.text.strip().replace(",", ".")
+                    link = element.get_attribute("href")
+
+                    products.append({
+                        "name": name,
+                        "price": price,
+                        "link": link,
+                        "store": "Americanas"
+                    })
+                except (NoSuchElementException, StaleElementReferenceException) as e:
+                    print(f"Erro ao extrair dados de um item: {e}")
+
+            if products:
+                return products  # Retornar produtos se encontrados
+
+            print(f"Nenhum produto encontrado com o navegador {browser}. Tentando com o próximo navegador.")
+            
+            if driver:
+                driver.quit()
+            continue
+
+        except (WebDriverException, ValueError) as e:
+            print(f"Erro com o navegador {browser}: {e}")
+            if driver:
+                driver.quit()
+            continue  # Tentar próximo navegador
+
+    print("Nenhum produto encontrado com nenhum dos navegadores.")
+    return []
+
+'''
 def scrape_madeira_madeira():
     options = Options()
     options.add_argument("--headless")
@@ -410,7 +457,7 @@ def main():
         # Realiza o scraping de cada site
         mercado_livre_products = scrape_mercado_livre()
         magalu_products = scrape_magalu()
-        #americanas_products = scrape_americanas()
+        americanas_products = scrape_americanas()
         #madeira_madeira_products = scrape_madeira_madeira()
         #shopee_products = scrape_shopee()
         #kabum_products = scrape_kabum()
@@ -420,7 +467,7 @@ def main():
         all_products = []
         all_products.extend(mercado_livre_products)
         all_products.extend(magalu_products)
-        #all_products.extend(americanas_products)
+        all_products.extend(americanas_products)
         #all_products.extend(madeira_madeira_products)
         #all_products.extend(shopee_products)
         #all_products.extend(kabum_products)
