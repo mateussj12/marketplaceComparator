@@ -21,3 +21,9 @@ import time
 
 from fake_useragent import UserAgent
 import requests
+
+import sys
+import os
+
+import requests
+from requests.auth import HTTPProxyAuth

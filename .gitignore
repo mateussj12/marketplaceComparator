@@ -1,12 +1,9 @@
-/node_modules
-/frontend/node_modules
-/backend/node_modules
-package-lock.json
-package.json
-/frontend/.gitignore
-/frontend/README.md
 marketplace_products.csv
 pagina_inicial_sempoup.png
 pagina_inicial.png
 pagina_pesquisa.png
-src\web_driver\__pycache__
+teste.py
+incompleted.py
+teste_driver.py
+
+
