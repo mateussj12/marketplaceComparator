@@ -1,0 +1,62 @@
+{
+    "Loja A": [
+      {
+        "nome": "Produto 1",
+        "preco": 100.0,
+        "categoria": "Eletrônicos",
+        "frete": "Grátis para SP"
+      },
+      {
+        "nome": "Produto 2",
+        "preco": 50.0,
+        "categoria": "Moda",
+        "frete": "R$ 10,00 para fora do estado"
+      },
+      {
+        "nome": "Produto 3",
+        "preco": 30.0,
+        "categoria": "Livros",
+        "frete": "Frete Grátis"
+      }
+    ],
+    "Loja B": [
+      {
+        "nome": "Produto 4",
+        "preco": 120.0,
+        "categoria": "Eletrônicos",
+        "frete": "Frete Grátis"
+      },
+      {
+        "nome": "Produto 5",
+        "preco": 25.0,
+        "categoria": "Moda",
+        "frete": "R$ 15,00 para Norte e Nordeste"
+      },
+      {
+        "nome": "Produto 6",
+        "preco": 40.0,
+        "categoria": "Livros",
+        "frete": "R$ 5,00 por unidade"
+      }
+    ],
+    "Loja C": [
+      {
+        "nome": "Produto 7",
+        "preco": 80.0,
+        "categoria": "Eletrônicos",
+        "frete": "Frete Grátis"
+      },
+      {
+        "nome": "Produto 8",
+        "preco": 35.0,
+        "categoria": "Moda",
+        "frete": "R$ 12,00 fixo"
+      },
+      {
+        "nome": "Produto 9",
+        "preco": 20.0,
+        "categoria": "Livros",
+        "frete": "Frete Grátis"
+      }
+    ]
+  }
