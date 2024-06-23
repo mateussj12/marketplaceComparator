@@ -381,7 +381,7 @@
     {
       "nome": "Automotivo 3",
       "preco": 537.0,
-      "categoria": "Automotiva",
+      "categoria": " Livros",
       "frete": "Frete Grátis"
     },
     {
@@ -503,7 +503,7 @@
     {
       "nome": "Automotivo 3",
       "preco": 537.0,
-      "categoria": "Automotiva",
+      "categoria": " Livros",
       "frete": "Frete Grátis"
     },
     {
@@ -622,12 +622,7 @@
       "categoria": "Moda",
       "frete": "R$ 12,00 fixo"
     },
-    {
-      "nome": "Automotivo 3",
-      "preco": 537.0,
-      "categoria": "Automotiva",
-      "frete": "Frete Grátis"
-    },
+
     {
       "nome": "Produto 4",
       "preco": 90.0,
@@ -741,7 +736,8 @@
       "nome": "Produto 22",
       "preco": 95.0,
       "categoria": "Beleza",
-      "frete": "R$ 15,00 por unidade"
+      "frete": "R$ 15,00 por unidade",
+      "descricao": "sajdlaskjdalskjdlaskjdalskdjaslkdjaslkdjasldkjasdlkasjdlkasdjalskdjaslkdjasldkajsdlkasjdlkasjdalskdjalksdjalskdjaslkdjaskldjasldkjasdklajsdlkasdjalksdjaslkdjaldksjaslk"
     }
   ]
 }
